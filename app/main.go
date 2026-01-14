@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/codecrafters-io/shell-starter-go/app/commands"
 )
 
 func main() {
@@ -19,10 +21,13 @@ func main() {
 		cmdName := strings.Split(cmd, " ")[0]
 		args := strings.Split(cmd, " ")[1:]
 		switch cmdName {
-		case "echo":
-			fmt.Println(strings.Join(args, " "))
+		case commands.Echo.String():
+			commands.HandleEcho(args)
 			break
-		case "exit":
+		case commands.Type.String():
+			commands.HandleType(strings.Join(args, " "))
+			break
+		case commands.Exit.String():
 			return
 		default:
 			fmt.Printf("%v: command not found\n", cmdName)
