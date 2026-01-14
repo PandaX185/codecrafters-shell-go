@@ -14,6 +14,11 @@ func main() {
 			fmt.Println("Error reading command:", err)
 			continue
 		}
-		fmt.Printf("%v: command not found\n", cmd[:len(cmd)-1])
+		switch cmd[:len(cmd)-1] {
+		case "exit":
+			return
+		default:
+			fmt.Printf("%v: command not found\n", cmd[:len(cmd)-1])
+		}
 	}
 }
