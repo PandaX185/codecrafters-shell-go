@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -14,11 +15,17 @@ func main() {
 			fmt.Println("Error reading command:", err)
 			continue
 		}
-		switch cmd[:len(cmd)-1] {
+		cmd = cmd[:len(cmd)-1]
+		cmdName := strings.Split(cmd, " ")[0]
+		args := strings.Split(cmd, " ")[1:]
+		switch cmdName {
+		case "echo":
+			fmt.Println(strings.Join(args, " "))
+			break
 		case "exit":
 			return
 		default:
-			fmt.Printf("%v: command not found\n", cmd[:len(cmd)-1])
+			fmt.Printf("%v: command not found\n", cmdName)
 		}
 	}
 }
