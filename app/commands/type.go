@@ -40,5 +40,5 @@ func pathSearch(cmd string) bool {
 }
 
 func checkFileExecutable(file os.FileInfo) bool {
-	return file.Mode().IsRegular() && (file.Mode().Perm()&0111 != 0)
+	return file.Mode().Perm()&0111 != 0
 }
