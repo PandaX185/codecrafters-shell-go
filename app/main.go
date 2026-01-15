@@ -75,6 +75,7 @@ func main() {
 				continue
 			}
 
+			tabCount = 0
 			cmd += string(b)
 			fmt.Printf("%c", b)
 		}
