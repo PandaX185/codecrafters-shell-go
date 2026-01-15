@@ -43,10 +43,10 @@ func main() {
 					cmd += toAdd
 					fmt.Print(toAdd)
 				} else {
-					if tabCount != 2 {
+					if tabCount == 1 {
 						if len(completions) > 0 {
+							fmt.Print(completions[0][len(cmd):])
 							cmd = completions[0]
-							fmt.Print("\r\n$ " + cmd)
 						} else {
 							fmt.Printf("%c", 0x07)
 						}
