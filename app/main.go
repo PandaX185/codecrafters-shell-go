@@ -24,6 +24,7 @@ func main() {
 
 		var cmd string
 		consoleReader := bufio.NewReader(os.Stdin)
+		tabCount := 0
 		for {
 			b, err := consoleReader.ReadByte()
 			if err != nil {
@@ -35,13 +36,22 @@ func main() {
 				break
 			}
 			if b == '\t' {
+				tabCount = (tabCount + 1) % 3
 				completions := commands.GetCompletions(cmd)
 				if len(completions) == 1 {
 					toAdd := completions[0][len(cmd):] + " "
 					cmd += toAdd
 					fmt.Print(toAdd)
+				} else if len(completions) == 0 {
+					fmt.Printf("%c\r\n", 0x07)
 				} else {
-					fmt.Printf("%c", 0x07)
+					if tabCount == 1 {
+						fmt.Print("\r\n")
+					} else {
+						fmt.Print("\r\n")
+						fmt.Print(strings.Join(completions, "  ") + "\r\n")
+					}
+					fmt.Print("$ " + cmd)
 				}
 				continue
 			}
@@ -51,6 +61,7 @@ func main() {
 				return
 			}
 			if b == 127 || b == 8 {
+				tabCount = 0
 				if len(cmd) > 0 {
 					cmd = cmd[:len(cmd)-1]
 					fmt.Print("\b \b")

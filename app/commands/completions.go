@@ -12,10 +12,6 @@ func GetCompletions(prefix string) []string {
 		}
 	}
 
-	if len(completions) > 0 {
-		return completions
-	}
-
 	executables := getPathFiles()
 	for _, exe := range executables {
 		parts := strings.Split(exe, "/")
