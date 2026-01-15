@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"bytes"
 	"fmt"
 	"os/exec"
 )
@@ -15,27 +16,15 @@ func HandleExternalApp(cmd string, args []string) {
 
 func executeExternalApp(app string, args []string) (string, error) {
 	cmd := exec.Command(app, args...)
-	out, err := cmd.StdoutPipe()
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	output := stdout.String()
+	errOutput := stderr.String()
 	if err != nil {
-		return "", err
+		return output + errOutput, err
 	}
-	errOut, err := cmd.StderrPipe()
-	if err != nil {
-		return "", err
-	}
-	if err := cmd.Start(); err != nil {
-		return "", err
-	}
-	outputBytes := make([]byte, 4096)
-	n, _ := out.Read(outputBytes)
-	if n > 0 {
-		return string(outputBytes[:n]), nil
-	}
-	errBytes := make([]byte, 4096)
-	n, _ = errOut.Read(errBytes)
-	if n > 0 {
-		return string(errBytes[:n]), nil
-	}
-	err = cmd.Wait()
-	return string(outputBytes[:n]), err
+	return output, nil
 }

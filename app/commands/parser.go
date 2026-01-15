@@ -89,6 +89,10 @@ func TokenizeCommand(line string) (argc []string) {
 			toAppend := lineRunes[i : i+nextQuoteInd]
 			if r == '"' {
 				toAppend = normalizeDQuotes(toAppend)
+			} else if r == '\'' {
+				s := string(toAppend)
+				s = UnescapeString(s)
+				toAppend = []rune(s)
 			}
 
 			token = append(token, toAppend...)
