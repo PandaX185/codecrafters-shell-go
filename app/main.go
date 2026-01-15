@@ -44,8 +44,9 @@ func main() {
 					cmd = toAdd
 				} else {
 					if tabCount == 1 {
-						toAdd := commands.GetLcsPrefix(completions)[len(cmd):]
-						if len(completions) > 0 && toAdd != "" {
+						toAdd := commands.GetLcsPrefix(completions)
+						if len(completions) > 0 && toAdd != cmd {
+							toAdd = toAdd[len(cmd):]
 							fmt.Print(toAdd)
 							cmd += toAdd
 						} else {
