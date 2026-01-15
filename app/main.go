@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/codecrafters-io/shell-starter-go/app/commands"
+	"github.com/google/shlex"
 )
 
 func main() {
@@ -19,7 +20,11 @@ func main() {
 		}
 		cmd = cmd[:len(cmd)-1]
 		cmdName := strings.Split(cmd, " ")[0]
-		args := strings.Split(cmd, " ")[1:]
+		args, err := shlex.Split(cmd[len(cmdName):])
+		if err != nil {
+			fmt.Println("Error parsing arguments:", err)
+			continue
+		}
 		switch cmdName {
 		case commands.Echo.String():
 			commands.HandleEcho(args)
