@@ -12,7 +12,7 @@ func HandleExternalApp(cmd string, args []string) {
 			if err := executeExternalApp(app, args); err != nil {
 				fmt.Printf("Error executing %s: %v\n", cmd, err)
 			}
-			fmt.Printf("Program was passed %v args (including program name)\n", len(args)+1)
+			fmt.Printf("Program was passed %v args (including program name)\n.", len(args)+1)
 			return
 		}
 	}
