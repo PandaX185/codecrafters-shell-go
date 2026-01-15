@@ -4,10 +4,10 @@ import (
 	"os"
 )
 
-func HandlePwd() string {
+func HandlePwd() (string, string) {
 	if dir, err := os.Getwd(); err == nil {
-		return dir + "\n"
+		return dir + "\n", ""
 	} else {
-		return "pwd: error retrieving current directory\n"
+		return "", "pwd: error retrieving current directory\n"
 	}
 }

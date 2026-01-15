@@ -45,29 +45,33 @@ func main() {
 			outFile = file
 		}
 
-		var res string
+		var (
+			res    string
+			errOut string
+		)
 		switch cmdName {
 		case commands.Echo.String():
-			res = commands.HandleEcho(args)
+			res, errOut = commands.HandleEcho(args)
 			break
 		case commands.Type.String():
 			cmd := strings.Join(args, " ")
 			cmd = commands.UnescapeString(cmd)
-			res = commands.HandleType(cmd)
+			res, errOut = commands.HandleType(cmd)
 			break
 		case commands.Exit.String():
 			return
 		case commands.Pwd.String():
-			res = commands.HandlePwd()
+			res, errOut = commands.HandlePwd()
 			break
 		case commands.Cd.String():
 			dir := strings.Join(args, " ")
 			dir = commands.UnescapeString(dir)
-			res = commands.HandleCd(dir)
+			res, errOut = commands.HandleCd(dir)
 			break
 		default:
-			res = commands.HandleExternalApp(cmdName, args)
+			res, errOut = commands.HandleExternalApp(cmdName, args)
 		}
 		outFile.WriteString(res)
+		os.Stderr.WriteString(errOut)
 	}
 }
