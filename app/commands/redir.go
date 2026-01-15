@@ -5,7 +5,7 @@ func HasOutRedir(args []string) (int, int) {
 		if arg == ">" || arg == "1>" {
 			return i, 0
 		}
-		if arg == ">>" {
+		if arg == ">>" || arg == "1>>" {
 			return i, 1
 		}
 	}
