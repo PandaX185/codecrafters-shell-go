@@ -138,13 +138,13 @@ func main() {
 			res, errOut = commands.HandleExternalApp(cmdName, args)
 		}
 
-		res = strings.TrimRight(res, "\n")
-		errOut = strings.TrimRight(errOut, "\n")
 		if res != "" {
-			outFile.WriteString(res + "\r\n")
+			res = strings.ReplaceAll(res, "\n", "\r\n")
+			outFile.WriteString(res)
 		}
 		if errOut != "" {
-			errFile.WriteString(errOut + "\r\n")
+			errOut = strings.ReplaceAll(errOut, "\n", "\r\n")
+			errFile.WriteString(errOut)
 		}
 	}
 }
