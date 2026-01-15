@@ -6,9 +6,6 @@ import (
 )
 
 func HandleExternalApp(cmd string, args []string) {
-	for i, arg := range args {
-		args[i] = unescapeString(arg)
-	}
 	if output, err := executeExternalApp(cmd, args); err == nil {
 		fmt.Print(output)
 		return
