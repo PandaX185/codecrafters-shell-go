@@ -44,7 +44,7 @@ func main() {
 					fmt.Print(toAdd)
 				} else {
 					if tabCount == 1 {
-						fmt.Print("\r\n")
+						fmt.Print("%c\r\n", 0x07)
 					} else {
 						fmt.Print("\r\n")
 						fmt.Print(strings.Join(completions, "  ") + "\r\n")
