@@ -23,5 +23,6 @@ func GetCompletions(prefix string) []string {
 	}
 
 	slices.Sort(completions)
+	completions = slices.Compact(completions)
 	return completions
 }
