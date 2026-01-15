@@ -42,12 +42,13 @@ func normalizeDQuotes(runes []rune) []rune {
 }
 
 func indexNonEscaped(runes []rune, quote rune) int {
-	for i, r := range runes {
+	for i := 0; i < len(runes); i++ {
+		r := runes[i]
 		if r == quote {
 			return i
 		}
-		if r == '\\' && i+1 < len(runes) && runes[i+1] == quote {
-			i++
+		if r == '\\' && i+1 < len(runes) {
+			i++ // Skip the next character (escaped)
 		}
 	}
 	return -1
