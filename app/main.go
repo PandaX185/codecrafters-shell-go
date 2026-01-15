@@ -137,6 +137,9 @@ func main() {
 		default:
 			res, errOut = commands.HandleExternalApp(cmdName, args)
 		}
+
+		res = strings.TrimRight(res, "\n")
+		errOut = strings.TrimRight(errOut, "\n")
 		if res != "" {
 			outFile.WriteString(res + "\r\n")
 		}
