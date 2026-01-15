@@ -37,7 +37,7 @@ func main() {
 			if b == '\t' {
 				completions := commands.GetCompletions(cmd)
 				if len(completions) == 1 {
-					toAdd := completions[0][len(cmd):]
+					toAdd := completions[0][len(cmd):] + " "
 					cmd += toAdd
 					fmt.Print(toAdd)
 				} else if len(completions) > 1 {
@@ -52,7 +52,7 @@ func main() {
 			if b == 3 {
 				fmt.Print("^C\r\n")
 				cmd = ""
-				os.Exit(0)
+				return
 			}
 			if b == 127 || b == 8 {
 				if len(cmd) > 0 {
