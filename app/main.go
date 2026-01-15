@@ -32,6 +32,9 @@ func main() {
 		case commands.Pwd.String():
 			commands.HandlePwd()
 			break
+		case commands.Cd.String():
+			commands.HandleCd(strings.Join(args, " "))
+			break
 		default:
 			commands.HandleExternalApp(cmdName, args)
 		}

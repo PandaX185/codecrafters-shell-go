@@ -13,6 +13,7 @@ const (
 	Exit
 	Type
 	Pwd
+	Cd
 )
 
 var builtinCommands = map[string]bool{
@@ -20,6 +21,7 @@ var builtinCommands = map[string]bool{
 	Exit.String(): true,
 	Type.String(): true,
 	Pwd.String():  true,
+	Cd.String():   true,
 }
 
 func (c command) String() string {
@@ -32,6 +34,8 @@ func (c command) String() string {
 		return "type"
 	case Pwd:
 		return "pwd"
+	case Cd:
+		return "cd"
 	default:
 		return "unknown"
 	}
