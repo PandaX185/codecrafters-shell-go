@@ -7,12 +7,12 @@ import (
 )
 
 func HandleExternalApp(cmd string, args []string) {
-	path, err := exec.LookPath(cmd)
+	_, err := exec.LookPath(cmd)
 	if err != nil {
 		fmt.Printf("%s: command not found\n", cmd)
 		return
 	}
-	output, errOutput := executeExternalApp(path, args)
+	output, errOutput := executeExternalApp(cmd, args)
 	fmt.Print(output)
 	fmt.Print(errOutput)
 }
