@@ -6,7 +6,7 @@ import (
 )
 
 func HandleCd(dir string) {
-	if dir == "" {
+	if dir == "" || dir == "~" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
 			fmt.Println("cd: Unable to determine home directory")
