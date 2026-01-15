@@ -7,15 +7,63 @@ import (
 	"strings"
 
 	"github.com/codecrafters-io/shell-starter-go/app/commands"
+	"golang.org/x/term"
 )
 
 func main() {
+	fd := int(os.Stdin.Fd())
+	old, err := term.MakeRaw(fd)
+	if err != nil {
+		fmt.Println("Error setting terminal to raw mode:", err)
+		return
+	}
+	defer term.Restore(fd, old)
+
 	for {
 		fmt.Print("$ ")
-		cmd, err := bufio.NewReader(os.Stdin).ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading command:", err)
-			continue
+
+		var cmd string
+		consoleReader := bufio.NewReader(os.Stdin)
+		for {
+			b, err := consoleReader.ReadByte()
+			if err != nil {
+				fmt.Println("Error reading from console:", err)
+				return
+			}
+			if b == '\n' || b == '\r' {
+				fmt.Print("\r\n")
+				break
+			}
+			if b == '\t' {
+				completions := commands.GetCompletions(cmd)
+				if len(completions) == 1 {
+					toAdd := completions[0][len(cmd):]
+					cmd += toAdd
+					fmt.Print(toAdd)
+				} else if len(completions) > 1 {
+					fmt.Print("\r\n")
+					for _, c := range completions {
+						fmt.Printf("%s\t", c)
+					}
+					fmt.Print("\r\n$ " + cmd)
+				}
+				continue
+			}
+			if b == 3 {
+				fmt.Print("^C\r\n")
+				cmd = ""
+				os.Exit(0)
+			}
+			if b == 127 || b == 8 {
+				if len(cmd) > 0 {
+					cmd = cmd[:len(cmd)-1]
+					fmt.Print("\b \b")
+				}
+				continue
+			}
+
+			cmd += string(b)
+			fmt.Printf("%c", b)
 		}
 
 		tokens := commands.Parse(cmd)
@@ -89,7 +137,11 @@ func main() {
 		default:
 			res, errOut = commands.HandleExternalApp(cmdName, args)
 		}
-		outFile.WriteString(res)
-		errFile.WriteString(errOut)
+		if res != "" {
+			outFile.WriteString(res + "\r\n")
+		}
+		if errOut != "" {
+			errFile.WriteString(errOut + "\r\n")
+		}
 	}
 }

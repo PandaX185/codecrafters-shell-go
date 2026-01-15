@@ -6,5 +6,5 @@ import (
 )
 
 func HandleEcho(args []string) (string, string) {
-	return fmt.Sprintln(strings.Join(args, " ")), ""
+	return fmt.Sprint(strings.Join(args, " ")), ""
 }
