@@ -85,10 +85,43 @@ func getFileName(path string) string {
 }
 
 func unescapeString(s string) string {
+	runes := []rune(s)
+	result := make([]rune, 0, len(runes))
+	i := 0
+	for i < len(runes) {
+		if runes[i] == '\\' && i+1 < len(runes) && isOctalDigit(runes[i+1]) {
+			j := i + 1
+			for j < len(runes) && j < i+4 && isOctalDigit(runes[j]) {
+				j++
+			}
+			octalStr := string(runes[i+1 : j])
+			if val, err := parseOctal(octalStr); err == nil {
+				result = append(result, rune(val))
+				i = j
+				continue
+			}
+		}
+		result = append(result, runes[i])
+		i++
+	}
+	s = string(result)
+
 	s = strings.ReplaceAll(s, `\\`, `\`)
 	s = strings.ReplaceAll(s, `\n`, "\n")
 	s = strings.ReplaceAll(s, `\t`, "\t")
 	s = strings.ReplaceAll(s, `\"`, `"`)
 	s = strings.ReplaceAll(s, `\'`, "'")
 	return s
+}
+
+func isOctalDigit(r rune) bool {
+	return r >= '0' && r <= '7'
+}
+
+func parseOctal(s string) (int, error) {
+	val := 0
+	for _, r := range s {
+		val = val*8 + int(r-'0')
+	}
+	return val, nil
 }
