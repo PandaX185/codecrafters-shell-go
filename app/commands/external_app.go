@@ -9,19 +9,18 @@ func HandleExternalApp(cmd string, args []string) {
 	apps := getPathFiles()
 	for _, app := range apps {
 		if getFileName(app) == cmd {
-			if err := executeExternalApp(app, args); err != nil {
+			if out, err := executeExternalApp(app, args); err != nil {
 				fmt.Printf("Error executing %s: %v\n", cmd, err)
+			} else {
+				fmt.Print(out)
 			}
-			fmt.Printf("Program was passed %v args (including program name).\n", len(args)+1)
 			return
 		}
 	}
 	fmt.Printf("%s: command not found\n", cmd)
 }
 
-func executeExternalApp(app string, args []string) error {
-	if err := exec.Command(app, args...).Run(); err != nil {
-		return err
-	}
-	return nil
+func executeExternalApp(app string, args []string) (string, error) {
+	out, err := exec.Command(app, args...).CombinedOutput()
+	return string(out), err
 }
