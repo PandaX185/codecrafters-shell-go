@@ -6,16 +6,9 @@ import (
 )
 
 func HandleExternalApp(cmd string, args []string) {
-	apps := getPathFiles()
-	for _, app := range apps {
-		if getFileName(app) == cmd {
-			if out, err := executeExternalApp(app, args); err != nil {
-				fmt.Printf("Error executing %s: %v\n", cmd, err)
-			} else {
-				fmt.Print(out)
-			}
-			return
-		}
+	if output, err := executeExternalApp(cmd, args); err == nil {
+		fmt.Print(output)
+		return
 	}
 	fmt.Printf("%s: command not found\n", cmd)
 }
