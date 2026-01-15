@@ -28,16 +28,16 @@ func main() {
 		args := allArgs
 		outFile := os.Stdout
 		errFile := os.Stderr
-		flag := os.O_CREATE | os.O_WRONLY
 		if i, outRedir := commands.HasOutRedir(allArgs); i != -1 {
 			args = allArgs[:i]
 			fileName := allArgs[i+1]
+			flagOut := os.O_CREATE | os.O_WRONLY
 			if outRedir == 1 {
-				flag |= os.O_APPEND
+				flagOut |= os.O_APPEND
 			} else {
-				flag |= os.O_TRUNC
+				flagOut |= os.O_TRUNC
 			}
-			file, err := os.OpenFile(fileName, flag, 0644)
+			file, err := os.OpenFile(fileName, flagOut, 0644)
 			if err != nil {
 				fmt.Printf("Output redirection error: %v\n", err)
 				continue
@@ -48,12 +48,13 @@ func main() {
 		if i, errRedir := commands.HasErrRedir(allArgs); i != -1 {
 			args = allArgs[:min(i, len(args))]
 			fileName := allArgs[i+1]
+			flagErr := os.O_CREATE | os.O_WRONLY
 			if errRedir == 1 {
-				flag |= os.O_APPEND
+				flagErr |= os.O_APPEND
 			} else {
-				flag |= os.O_TRUNC
+				flagErr |= os.O_TRUNC
 			}
-			file, err := os.OpenFile(fileName, flag, 0644)
+			file, err := os.OpenFile(fileName, flagErr, 0644)
 			if err != nil {
 				fmt.Printf("Error redirection error: %v\n", err)
 				continue

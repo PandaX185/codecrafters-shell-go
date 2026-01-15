@@ -156,7 +156,7 @@ func TokenizeCommand(line string) (argc []string) {
 					token = token[:0]
 				}
 				argc = append(argc, "1>>")
-				i++
+				i += 2
 			} else if i < len(lineRunes)-1 && lineRunes[i+1] == '>' && !esc {
 				if len(token) != 0 {
 					argc = append(argc, string(token))
@@ -178,7 +178,7 @@ func TokenizeCommand(line string) (argc []string) {
 					token = token[:0]
 				}
 				argc = append(argc, "2>>")
-				i++
+				i += 2
 			} else if i < len(lineRunes)-1 && lineRunes[i+1] == '>' && !esc {
 				if len(token) != 0 {
 					argc = append(argc, string(token))
