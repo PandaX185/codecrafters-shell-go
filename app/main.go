@@ -48,6 +48,9 @@ func main() {
 					} else {
 						fmt.Print("\r\n")
 						fmt.Print(strings.Join(completions, "  ") + "\r\n")
+						if len(completions) > 0 {
+							cmd = completions[0]
+						}
 						fmt.Print("$ " + cmd)
 					}
 				}

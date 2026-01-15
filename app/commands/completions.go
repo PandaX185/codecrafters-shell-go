@@ -22,7 +22,12 @@ func GetCompletions(prefix string) []string {
 		}
 	}
 
-	slices.Sort(completions)
+	slices.SortFunc(completions, func(i, j string) int {
+		if len(i) != len(j) {
+			return len(i) - len(j)
+		}
+		return strings.Compare(i, j)
+	})
 	completions = slices.Compact(completions)
 	return completions
 }
