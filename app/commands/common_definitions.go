@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"os"
 	"strings"
 )
@@ -64,15 +63,14 @@ func getPathFiles() (result []string) {
 	return result
 }
 
-func pathSearch(cmd string) bool {
+func pathSearch(cmd string) string {
 	files := getPathFiles()
 	for _, file := range files {
 		if strings.HasSuffix(file, "/"+cmd) {
-			fmt.Println(file)
-			return true
+			return file
 		}
 	}
-	return false
+	return ""
 }
 
 func checkFileExecutable(file os.FileInfo) bool {
