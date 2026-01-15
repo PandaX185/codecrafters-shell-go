@@ -1,13 +1,17 @@
 package commands
 
 import (
+	"strconv"
 	"strings"
 	"unicode"
 )
 
 func normalizeDQuotes(runes []rune) []rune {
 	s := string(runes)
-	s = unescapeString(s)
+	s = strings.ReplaceAll(s, `\\`, `\`)
+	s = strings.ReplaceAll(s, `\"`, `"`)
+	s = strings.ReplaceAll(s, "\\\n", "")
+	s = strings.ReplaceAll(s, "\\\r\n", "")
 	return []rune(s)
 }
 
@@ -23,7 +27,7 @@ func indexNonEscaped(runes []rune, quote rune) int {
 	return -1
 }
 
-func tokenize(line string) (argc []string) {
+func TokenizeCommand(line string) (argc []string) {
 	line = strings.TrimLeftFunc(line, unicode.IsSpace)
 	if len(line) == 0 {
 		return nil
@@ -31,7 +35,7 @@ func tokenize(line string) (argc []string) {
 
 	token := make([]rune, 0, 256)
 	lineRunes := []rune(line)
-	escMode := false
+	esc := false
 
 	i := 0
 	for i < len(lineRunes) {
@@ -39,9 +43,9 @@ func tokenize(line string) (argc []string) {
 
 		switch r {
 		case ' ', '\t', '\n':
-			if escMode {
+			if esc {
 				token = append(token, r)
-				escMode = false
+				esc = false
 				break
 			}
 
@@ -53,9 +57,9 @@ func tokenize(line string) (argc []string) {
 			token = token[:0]
 
 		case '\'', '"':
-			if escMode {
+			if esc {
 				token = append(token, r)
-				escMode = false
+				esc = false
 				break
 			}
 
@@ -91,17 +95,17 @@ func tokenize(line string) (argc []string) {
 			i += nextQuoteInd
 
 		case '\\':
-			if escMode {
+			if esc {
 				token = append(token, r)
-				escMode = false
+				esc = false
 				break
 			}
 
-			escMode = true
+			esc = true
 
 		default:
-			if escMode {
-				escMode = false
+			if esc {
+				esc = false
 			}
 
 			token = append(token, r)
@@ -118,5 +122,13 @@ func tokenize(line string) (argc []string) {
 
 func Parse(line string) []string {
 	line = strings.TrimSuffix(line, "\n")
-	return tokenize(line)
+	return TokenizeCommand(line)
+}
+
+func UnescapeString(s string) string {
+	unescaped, err := strconv.Unquote(`"` + s + `"`)
+	if err != nil {
+		return s
+	}
+	return unescaped
 }

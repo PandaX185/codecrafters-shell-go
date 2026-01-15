@@ -30,7 +30,9 @@ func main() {
 			commands.HandleEcho(args)
 			break
 		case commands.Type.String():
-			commands.HandleType(strings.Join(args, " "))
+			cmd := strings.Join(args, " ")
+			cmd = commands.UnescapeString(cmd)
+			commands.HandleType(cmd)
 			break
 		case commands.Exit.String():
 			return
@@ -38,7 +40,9 @@ func main() {
 			commands.HandlePwd()
 			break
 		case commands.Cd.String():
-			commands.HandleCd(strings.Join(args, " "))
+			dir := strings.Join(args, " ")
+			dir = commands.UnescapeString(dir)
+			commands.HandleCd(dir)
 			break
 		default:
 			commands.HandleExternalApp(cmdName, args)
