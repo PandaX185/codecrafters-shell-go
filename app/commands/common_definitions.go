@@ -12,12 +12,14 @@ const (
 	Echo command = iota
 	Exit
 	Type
+	Pwd
 )
 
 var builtinCommands = map[string]bool{
 	Echo.String(): true,
 	Exit.String(): true,
 	Type.String(): true,
+	Pwd.String():  true,
 }
 
 func (c command) String() string {
@@ -28,6 +30,8 @@ func (c command) String() string {
 		return "exit"
 	case Type:
 		return "type"
+	case Pwd:
+		return "pwd"
 	default:
 		return "unknown"
 	}

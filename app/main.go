@@ -29,6 +29,9 @@ func main() {
 			break
 		case commands.Exit.String():
 			return
+		case commands.Pwd.String():
+			commands.HandlePwd()
+			break
 		default:
 			commands.HandleExternalApp(cmdName, args)
 		}
