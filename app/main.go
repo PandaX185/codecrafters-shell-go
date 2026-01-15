@@ -44,12 +44,12 @@ func main() {
 					fmt.Print(toAdd)
 				} else {
 					if tabCount == 1 {
-						fmt.Print("\r\n")
+						fmt.Print("\r\n$ ")
 					} else {
 						fmt.Print("\r\n")
 						fmt.Print(strings.Join(completions, "  ") + "\r\n")
+						fmt.Print("$ " + cmd)
 					}
-					fmt.Print("$ " + cmd)
 				}
 				continue
 			}
