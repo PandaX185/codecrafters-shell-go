@@ -30,7 +30,7 @@ func main() {
 		case commands.Exit.String():
 			return
 		default:
-			fmt.Printf("%v: command not found\n", cmdName)
+			commands.HandleExternalApp(cmdName, args)
 		}
 	}
 }
