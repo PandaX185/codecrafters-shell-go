@@ -21,14 +21,6 @@ func normalizeDQuotes(runes []rune) []rune {
 				result = append(result, '"')
 				i += 2
 				continue
-			case 'n':
-				result = append(result, '\n')
-				i += 2
-				continue
-			case 't':
-				result = append(result, '\t')
-				i += 2
-				continue
 			case '\n':
 				i += 2
 				continue
@@ -40,10 +32,6 @@ func normalizeDQuotes(runes []rune) []rune {
 			case '$', '`':
 				result = append(result, next)
 				i += 2
-				continue
-			default:
-				result = append(result, '\\')
-				i++
 				continue
 			}
 		}
