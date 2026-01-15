@@ -39,7 +39,7 @@ func main() {
 				tabCount = tabCount%2 + 1
 				completions := commands.GetCompletions(cmd)
 				if len(completions) == 1 {
-					toAdd := completions[0]
+					toAdd := completions[0] + " "
 					fmt.Print(toAdd[len(cmd):])
 					cmd = toAdd
 				} else {
