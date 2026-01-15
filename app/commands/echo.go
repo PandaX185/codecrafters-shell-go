@@ -6,5 +6,5 @@ import (
 )
 
 func HandleEcho(args []string) {
-	fmt.Println(strings.Join(args, " "))
+	fmt.Println(strings.Trim(strings.Join(args, " "), "'"))
 }
