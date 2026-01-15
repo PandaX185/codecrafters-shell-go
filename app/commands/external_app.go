@@ -7,24 +7,22 @@ import (
 )
 
 func HandleExternalApp(cmd string, args []string) {
-	if output, err := executeExternalApp(cmd, args); err == nil {
-		fmt.Print(output)
+	path, err := exec.LookPath(cmd)
+	if err != nil {
+		fmt.Printf("%s: command not found\n", cmd)
 		return
 	}
-	fmt.Printf("%s: command not found\n", cmd)
+	output, errOutput := executeExternalApp(path, args)
+	fmt.Print(output)
+	fmt.Print(errOutput)
 }
 
-func executeExternalApp(app string, args []string) (string, error) {
+func executeExternalApp(app string, args []string) (string, string) {
 	cmd := exec.Command(app, args...)
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
-	err := cmd.Run()
-	output := stdout.String()
-	errOutput := stderr.String()
-	if err != nil {
-		return output + errOutput, err
-	}
-	return output, nil
+	cmd.Run()
+	return stdout.String(), stderr.String()
 }
