@@ -36,14 +36,14 @@ func main() {
 				break
 			}
 			if b == '\t' {
-				tabCount = (tabCount + 1) % 3
+				tabCount = tabCount%2 + 1
 				completions := commands.GetCompletions(cmd)
 				if len(completions) == 1 {
 					toAdd := completions[0][len(cmd):] + " "
 					cmd += toAdd
 					fmt.Print(toAdd)
 				} else {
-					if tabCount == 1 {
+					if tabCount != 2 {
 						if len(completions) > 0 {
 							cmd = completions[0]
 							fmt.Print("\r\n$ " + cmd)
