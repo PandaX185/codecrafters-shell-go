@@ -7,12 +7,50 @@ import (
 )
 
 func normalizeDQuotes(runes []rune) []rune {
-	s := string(runes)
-	s = strings.ReplaceAll(s, `\\`, `\`)
-	s = strings.ReplaceAll(s, `\"`, `"`)
-	s = strings.ReplaceAll(s, "\\\n", "")
-	s = strings.ReplaceAll(s, "\\\r\n", "")
-	return []rune(s)
+	result := make([]rune, 0, len(runes))
+	i := 0
+	for i < len(runes) {
+		if runes[i] == '\\' && i+1 < len(runes) {
+			next := runes[i+1]
+			switch next {
+			case '\\':
+				result = append(result, '\\')
+				i += 2
+				continue
+			case '"':
+				result = append(result, '"')
+				i += 2
+				continue
+			case 'n':
+				result = append(result, '\n')
+				i += 2
+				continue
+			case 't':
+				result = append(result, '\t')
+				i += 2
+				continue
+			case '\n':
+				i += 2
+				continue
+			case '\r':
+				if i+2 < len(runes) && runes[i+2] == '\n' {
+					i += 3
+					continue
+				}
+			case '$', '`':
+				result = append(result, next)
+				i += 2
+				continue
+			default:
+				result = append(result, '\\')
+				i++
+				continue
+			}
+		}
+		result = append(result, runes[i])
+		i++
+	}
+	return result
 }
 
 func indexNonEscaped(runes []rune, quote rune) int {
@@ -89,10 +127,6 @@ func TokenizeCommand(line string) (argc []string) {
 			toAppend := lineRunes[i : i+nextQuoteInd]
 			if r == '"' {
 				toAppend = normalizeDQuotes(toAppend)
-			} else if r == '\'' {
-				s := string(toAppend)
-				s = UnescapeString(s)
-				toAppend = []rune(s)
 			}
 
 			token = append(token, toAppend...)

@@ -6,7 +6,5 @@ import (
 )
 
 func HandleEcho(args []string) {
-	output := strings.Join(args, " ")
-	output = UnescapeString(output)
-	fmt.Println(output)
+	fmt.Println(strings.Join(args, " "))
 }
