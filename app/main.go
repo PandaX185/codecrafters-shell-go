@@ -39,23 +39,21 @@ func main() {
 				tabCount = tabCount%2 + 1
 				completions := commands.GetCompletions(cmd)
 				if len(completions) == 1 {
-					toAdd := completions[0][len(cmd):] + " "
-					cmd += toAdd
-					fmt.Print(toAdd)
+					toAdd := completions[0]
+					fmt.Print(toAdd[len(cmd):])
+					cmd = toAdd
 				} else {
 					if tabCount == 1 {
-						if len(completions) > 0 {
-							fmt.Print(completions[0][len(cmd):])
-							cmd = completions[0]
+						toAdd := commands.GetLcsPrefix(completions)[len(cmd):]
+						if len(completions) > 0 && toAdd != "" {
+							fmt.Print(toAdd)
+							cmd += toAdd
 						} else {
 							fmt.Printf("%c", 0x07)
 						}
 					} else {
 						fmt.Print("\r\n")
 						fmt.Print(strings.Join(completions, "  ") + "\r\n")
-						if len(completions) > 0 {
-							cmd = completions[0]
-						}
 						fmt.Print("$ " + cmd)
 					}
 				}

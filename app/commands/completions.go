@@ -31,3 +31,22 @@ func GetCompletions(prefix string) []string {
 	completions = slices.Compact(completions)
 	return completions
 }
+
+func GetLcsPrefix(strs []string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+	result := ""
+	minLen := len(strs[0])
+
+	for i := 0; i < minLen; i++ {
+		c := strs[0][i]
+		for j := 1; j < len(strs); j++ {
+			if strs[j][i] != c {
+				return result
+			}
+		}
+		result += string(c)
+	}
+	return result
+}
