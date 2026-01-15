@@ -12,7 +12,7 @@ func HandleType(cmd string) (string, string) {
 		if path != "" {
 			return fmt.Sprintf("%s is %s\n", cmd, path), ""
 		} else {
-			return "", fmt.Sprintf("type: %s: not found\n", cmd)
+			return "", fmt.Sprintf("%s: not found\n", cmd)
 		}
 	}
 }
