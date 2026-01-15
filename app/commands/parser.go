@@ -48,7 +48,7 @@ func indexNonEscaped(runes []rune, quote rune) int {
 			return i
 		}
 		if r == '\\' && i+1 < len(runes) {
-			i++ // Skip the next character (escaped)
+			i++
 		}
 	}
 	return -1

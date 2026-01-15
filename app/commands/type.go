@@ -4,10 +4,11 @@ import (
 	"fmt"
 )
 
-func HandleType(cmd string) {
+func HandleType(cmd string) string {
 	if _, ok := builtinCommands[cmd]; ok {
-		fmt.Printf("%s is a shell builtin\n", cmd)
+		return fmt.Sprintf("%s is a shell builtin\n", cmd)
 	} else if !pathSearch(cmd) {
-		fmt.Printf("%s: not found\n", cmd)
+		return fmt.Sprintf("%s: not found\n", cmd)
 	}
+	return ""
 }

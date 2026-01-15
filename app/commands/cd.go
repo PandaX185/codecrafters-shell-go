@@ -5,16 +5,16 @@ import (
 	"os"
 )
 
-func HandleCd(dir string) {
+func HandleCd(dir string) string {
 	if dir == "" || dir == "~" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Println("cd: Unable to determine home directory")
-			return
+			return "cd: Unable to determine home directory\n"
 		}
 		dir = homeDir
 	}
 	if err := os.Chdir(dir); err != nil {
-		fmt.Printf("cd: %v: No such file or directory\n", dir)
+		return fmt.Sprintf("cd: %v: No such file or directory\n", dir)
 	}
+	return ""
 }

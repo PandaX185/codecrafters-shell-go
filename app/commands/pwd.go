@@ -1,14 +1,13 @@
 package commands
 
 import (
-	"fmt"
 	"os"
 )
 
-func HandlePwd() {
+func HandlePwd() string {
 	if dir, err := os.Getwd(); err == nil {
-		fmt.Println(dir)
+		return dir + "\n"
 	} else {
-		fmt.Println("pwd: error retrieving current directory")
+		return "pwd: error retrieving current directory\n"
 	}
 }

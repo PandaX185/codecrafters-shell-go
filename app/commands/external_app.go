@@ -6,15 +6,13 @@ import (
 	"os/exec"
 )
 
-func HandleExternalApp(cmd string, args []string) {
+func HandleExternalApp(cmd string, args []string) string {
 	_, err := exec.LookPath(cmd)
 	if err != nil {
-		fmt.Printf("%s: command not found\n", cmd)
-		return
+		return fmt.Sprintf("%s: command not found\n", cmd)
 	}
 	output, errOutput := executeExternalApp(cmd, args)
-	fmt.Print(output)
-	fmt.Print(errOutput)
+	return output + errOutput
 }
 
 func executeExternalApp(app string, args []string) (string, string) {

@@ -24,28 +24,44 @@ func main() {
 		}
 
 		cmdName := tokens[0]
-		args := tokens[1:]
+		allArgs := tokens[1:]
+		args := allArgs
+		outFile := os.Stdout
+		if i := commands.HasRedir(allArgs); i != -1 {
+			args = allArgs[:i]
+			fileName := allArgs[i+1]
+			file, err := os.Create(fileName)
+			if err != nil {
+				fmt.Printf("Redirection error: %v\n", err)
+				continue
+			}
+			defer file.Close()
+			outFile = file
+		}
+
+		var res string
 		switch cmdName {
 		case commands.Echo.String():
-			commands.HandleEcho(args)
+			res = commands.HandleEcho(args)
 			break
 		case commands.Type.String():
 			cmd := strings.Join(args, " ")
 			cmd = commands.UnescapeString(cmd)
-			commands.HandleType(cmd)
+			res = commands.HandleType(cmd)
 			break
 		case commands.Exit.String():
 			return
 		case commands.Pwd.String():
-			commands.HandlePwd()
+			res = commands.HandlePwd()
 			break
 		case commands.Cd.String():
 			dir := strings.Join(args, " ")
 			dir = commands.UnescapeString(dir)
-			commands.HandleCd(dir)
+			res = commands.HandleCd(dir)
 			break
 		default:
-			commands.HandleExternalApp(cmdName, args)
+			res = commands.HandleExternalApp(cmdName, args)
 		}
+		commands.HandleRedir(res, outFile)
 	}
 }
