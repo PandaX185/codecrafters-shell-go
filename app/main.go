@@ -40,12 +40,8 @@ func main() {
 					toAdd := completions[0][len(cmd):] + " "
 					cmd += toAdd
 					fmt.Print(toAdd)
-				} else if len(completions) > 1 {
-					fmt.Print("\r\n")
-					for _, c := range completions {
-						fmt.Printf("%s\t", c)
-					}
-					fmt.Print("\r\n$ " + cmd)
+				} else {
+					fmt.Printf("%c", 0x07)
 				}
 				continue
 			}
