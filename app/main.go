@@ -27,22 +27,39 @@ func main() {
 		allArgs := tokens[1:]
 		args := allArgs
 		outFile := os.Stdout
-		if i, mode := commands.HasRedir(allArgs); i != -1 {
+		errFile := os.Stderr
+		flag := os.O_CREATE | os.O_WRONLY
+		if i, outRedir := commands.HasOutRedir(allArgs); i != -1 {
 			args = allArgs[:i]
 			fileName := allArgs[i+1]
-			flag := os.O_CREATE | os.O_WRONLY
-			if mode == 1 {
+			if outRedir == 1 {
 				flag |= os.O_APPEND
 			} else {
 				flag |= os.O_TRUNC
 			}
 			file, err := os.OpenFile(fileName, flag, 0644)
 			if err != nil {
-				fmt.Printf("Redirection error: %v\n", err)
+				fmt.Printf("Output redirection error: %v\n", err)
 				continue
 			}
 			defer file.Close()
 			outFile = file
+		}
+		if i, errRedir := commands.HasErrRedir(allArgs); i != -1 {
+			args = allArgs[:min(i, len(args))]
+			fileName := allArgs[i+1]
+			if errRedir == 1 {
+				flag |= os.O_APPEND
+			} else {
+				flag |= os.O_TRUNC
+			}
+			file, err := os.OpenFile(fileName, flag, 0644)
+			if err != nil {
+				fmt.Printf("Error redirection error: %v\n", err)
+				continue
+			}
+			defer file.Close()
+			errFile = file
 		}
 
 		var (
@@ -72,6 +89,6 @@ func main() {
 			res, errOut = commands.HandleExternalApp(cmdName, args)
 		}
 		outFile.WriteString(res)
-		os.Stderr.WriteString(errOut)
+		errFile.WriteString(errOut)
 	}
 }
