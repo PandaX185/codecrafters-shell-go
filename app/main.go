@@ -42,8 +42,6 @@ func main() {
 					toAdd := completions[0][len(cmd):] + " "
 					cmd += toAdd
 					fmt.Print(toAdd)
-				} else if len(completions) == 0 {
-					fmt.Printf("%c", 0x07)
 				} else {
 					if tabCount == 1 {
 						fmt.Print("\r\n")

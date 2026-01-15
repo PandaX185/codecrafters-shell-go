@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"slices"
 	"strings"
 )
 
@@ -20,5 +21,7 @@ func GetCompletions(prefix string) []string {
 			completions = append(completions, name)
 		}
 	}
+
+	slices.Sort(completions)
 	return completions
 }
