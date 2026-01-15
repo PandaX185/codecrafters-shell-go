@@ -1,16 +1,13 @@
 package commands
 
-import "os"
-
-func HandleRedir(result string, outFile *os.File) {
-	outFile.WriteString(result)
-}
-
-func HasRedir(args []string) int {
+func HasRedir(args []string) (int, int) {
 	for i, arg := range args {
-		if arg == ">" {
-			return i
+		if arg == ">" || arg == "1>" {
+			return i, 0
+		}
+		if arg == ">>" {
+			return i, 1
 		}
 	}
-	return -1
+	return -1, -1
 }

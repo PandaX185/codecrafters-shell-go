@@ -27,10 +27,16 @@ func main() {
 		allArgs := tokens[1:]
 		args := allArgs
 		outFile := os.Stdout
-		if i := commands.HasRedir(allArgs); i != -1 {
+		if i, mode := commands.HasRedir(allArgs); i != -1 {
 			args = allArgs[:i]
 			fileName := allArgs[i+1]
-			file, err := os.Create(fileName)
+			flag := os.O_CREATE | os.O_WRONLY
+			if mode == 1 {
+				flag |= os.O_APPEND
+			} else {
+				flag |= os.O_TRUNC
+			}
+			file, err := os.OpenFile(fileName, flag, 0644)
 			if err != nil {
 				fmt.Printf("Redirection error: %v\n", err)
 				continue
@@ -62,6 +68,6 @@ func main() {
 		default:
 			res = commands.HandleExternalApp(cmdName, args)
 		}
-		commands.HandleRedir(res, outFile)
+		outFile.WriteString(res)
 	}
 }
