@@ -124,32 +124,7 @@ func main() {
 			errFile = file
 		}
 
-		var (
-			res    string
-			errOut string
-		)
-		switch cmdName {
-		case commands.Echo.String():
-			res, errOut = commands.HandleEcho(args)
-			break
-		case commands.Type.String():
-			cmd := strings.Join(args, " ")
-			cmd = commands.UnescapeString(cmd)
-			res, errOut = commands.HandleType(cmd)
-			break
-		case commands.Exit.String():
-			return
-		case commands.Pwd.String():
-			res, errOut = commands.HandlePwd()
-			break
-		case commands.Cd.String():
-			dir := strings.Join(args, " ")
-			dir = commands.UnescapeString(dir)
-			res, errOut = commands.HandleCd(dir)
-			break
-		default:
-			res, errOut = commands.HandleExternalApp(cmdName, args)
-		}
+		res, errOut := commands.ExecuteCommand(cmdName, args)
 
 		if res != "" {
 			res = strings.ReplaceAll(res, "\n", "\r\n")

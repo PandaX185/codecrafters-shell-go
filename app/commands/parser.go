@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"strconv"
 	"strings"
 	"unicode"
 )
@@ -54,7 +53,7 @@ func indexNonEscaped(runes []rune, quote rune) int {
 	return -1
 }
 
-func TokenizeCommand(line string) (argc []string) {
+func tokenizeCommand(line string) (argc []string) {
 	line = strings.TrimLeftFunc(line, unicode.IsSpace)
 	if len(line) == 0 {
 		return nil
@@ -212,13 +211,5 @@ func TokenizeCommand(line string) (argc []string) {
 
 func Parse(line string) []string {
 	line = strings.TrimSuffix(line, "\n")
-	return TokenizeCommand(line)
-}
-
-func UnescapeString(s string) string {
-	unescaped, err := strconv.Unquote(`"` + s + `"`)
-	if err != nil {
-		return s
-	}
-	return unescaped
+	return tokenizeCommand(line)
 }

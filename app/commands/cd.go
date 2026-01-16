@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func HandleCd(dir string) (string, string) {
+func handleCd(dir string) (string, string) {
 	if dir == "" || dir == "~" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {

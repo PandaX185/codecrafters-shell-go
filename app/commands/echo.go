@@ -5,6 +5,6 @@ import (
 	"strings"
 )
 
-func HandleEcho(args []string) (string, string) {
+func handleEcho(args []string) (string, string) {
 	return fmt.Sprintln(strings.Join(args, " ")), ""
 }

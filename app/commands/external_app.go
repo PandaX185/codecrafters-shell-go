@@ -6,7 +6,7 @@ import (
 	"os/exec"
 )
 
-func HandleExternalApp(cmd string, args []string) (string, string) {
+func handleExternalApp(cmd string, args []string) (string, string) {
 	_, err := exec.LookPath(cmd)
 	if err != nil {
 		return "", fmt.Sprintf("%s: command not found\n", cmd)

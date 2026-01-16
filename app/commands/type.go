@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func HandleType(cmd string) (string, string) {
+func handleType(cmd string) (string, string) {
 	if _, ok := builtinCommands[cmd]; ok {
 		return fmt.Sprintf("%s is a shell builtin\n", cmd), ""
 	} else {

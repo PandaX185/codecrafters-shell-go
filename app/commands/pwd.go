@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-func HandlePwd() (string, string) {
+func handlePwd() (string, string) {
 	if dir, err := os.Getwd(); err == nil {
 		return dir + "\n", ""
 	} else {
