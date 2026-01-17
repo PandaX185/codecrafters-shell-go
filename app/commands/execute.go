@@ -1,12 +1,13 @@
 package commands
 
 import (
+	"context"
 	"io"
 	"os"
 	"strings"
 )
 
-func ExecuteCommand(cmd string, args []string, in io.Reader, out io.Writer, errOut io.Writer) {
+func ExecuteCommand(ctx context.Context, cmd string, args []string, in io.Reader, out io.Writer, errOut io.Writer) {
 	switch cmd {
 	case Echo.String():
 		handleEcho(args, out)
@@ -25,8 +26,7 @@ func ExecuteCommand(cmd string, args []string, in io.Reader, out io.Writer, errO
 		handleCd(dir, out, errOut)
 		break
 	default:
-		handleExternalApp(cmd, args, in, out, errOut)
+		handleExternalApp(ctx, cmd, args, in, out, errOut)
 	}
-
 	return
 }

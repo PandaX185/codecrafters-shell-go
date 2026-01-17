@@ -2,9 +2,12 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/codecrafters-io/shell-starter-go/app/commands"
 	"golang.org/x/term"
@@ -18,6 +21,19 @@ func main() {
 		return
 	}
 	defer term.Restore(fd, old)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGINT)
+	go func() {
+		<-signalChan
+		cancel()
+	}()
+
+	termOut := bufio.NewWriter(os.Stdout)
+	termErr := bufio.NewWriter(os.Stderr)
 
 	for {
 		fmt.Print("$ ")
@@ -84,6 +100,6 @@ func main() {
 			continue
 		}
 
-		commands.HandlePipeline(commands.ParsePipeline(cmd))
+		commands.HandlePipeline(ctx, cancel, commands.ParsePipeline(cmd), termOut, termErr)
 	}
 }

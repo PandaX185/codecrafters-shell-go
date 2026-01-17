@@ -1,12 +1,12 @@
 package commands
 
 import (
+	"bufio"
+	"context"
 	"io"
 	"os"
 	"strings"
 	"sync"
-
-	"golang.org/x/term"
 )
 
 type PipeCmd struct {
@@ -39,18 +39,28 @@ func ParsePipe(args []string) PipeCmd {
 	return pipe
 }
 
-func HandlePipeline(pipes []PipeCmd) {
+func HandlePipeline(ctx context.Context, cancel context.CancelFunc, pipes []PipeCmd, stdout *bufio.Writer, stderr io.Writer) {
 	var prevReader io.Reader = os.Stdin
 	var wg sync.WaitGroup
-	var terminalOut io.Writer = os.Stdout
-	var terminalErr io.Writer = os.Stderr
 
-	if term.IsTerminal(int(os.Stdout.Fd())) {
-		terminalOut = &crlfWriter{w: os.Stdout}
-	}
-	if term.IsTerminal(int(os.Stderr.Fd())) {
-		terminalErr = &crlfWriter{w: os.Stderr}
-	}
+	go func() {
+		buf := make([]byte, 1)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				n, err := os.Stdin.Read(buf)
+				if err != nil {
+					return
+				}
+				if n == 1 && buf[0] == 3 {
+					cancel()
+					return
+				}
+			}
+		}
+	}()
 
 	for i, pipe := range pipes {
 		isLast := i == len(pipes)-1
@@ -59,7 +69,23 @@ func HandlePipeline(pipes []PipeCmd) {
 		var nextReader io.Reader
 
 		if isLast {
-			out = terminalOut
+			go func(r io.Reader, w *bufio.Writer) {
+				buf := make([]byte, 1024)
+				for {
+					n, err := r.Read(buf)
+					if err != nil || n == 0 {
+						break
+					}
+					for i := range n {
+						if buf[i] == '\n' {
+							w.Write([]byte{'\r', '\n'})
+						} else {
+							w.Write([]byte{buf[i]})
+						}
+						w.Flush()
+					}
+				}
+			}(prevReader, stdout)
 		} else {
 			pr, pw := io.Pipe()
 			out = pw
@@ -67,13 +93,13 @@ func HandlePipeline(pipes []PipeCmd) {
 		}
 
 		wg.Add(1)
-		go func(cmd string, args []string, in io.Reader, out io.Writer, isLast bool) {
+		go func(ctx context.Context, cmd string, args []string, in io.Reader, out io.Writer, isLast bool) {
 			defer wg.Done()
-			ExecuteCommand(cmd, args, in, out, terminalErr)
+			ExecuteCommand(ctx, cmd, args, in, out, stderr)
 			if pw, ok := out.(*io.PipeWriter); ok {
 				pw.Close()
 			}
-		}(pipe.Cmd, pipe.Args, prevReader, out, isLast)
+		}(ctx, pipe.Cmd, pipe.Args, prevReader, out, isLast)
 		if !isLast {
 			prevReader = nextReader
 		}
