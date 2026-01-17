@@ -2,17 +2,18 @@ package commands
 
 import (
 	"fmt"
+	"io"
 )
 
-func handleType(cmd string) (string, string) {
+func handleType(cmd string, out io.Writer, errOut io.Writer) {
 	if _, ok := builtinCommands[cmd]; ok {
-		return fmt.Sprintf("%s is a shell builtin\n", cmd), ""
+		fmt.Fprintf(out, "%s is a shell builtin\n", cmd)
 	} else {
 		path := pathSearch(cmd)
 		if path != "" {
-			return fmt.Sprintf("%s is %s\n", cmd, path), ""
+			fmt.Fprintf(out, "%s is %s\n", cmd, path)
 		} else {
-			return "", fmt.Sprintf("%s: not found\n", cmd)
+			fmt.Fprintf(errOut, "%s: not found\n", cmd)
 		}
 	}
 }

@@ -1,26 +1,24 @@
 package commands
 
 import (
-	"bytes"
 	"fmt"
+	"io"
 	"os/exec"
 )
 
-func handleExternalApp(cmd string, args []string) (string, string) {
+func handleExternalApp(cmd string, args []string, in io.Reader, out io.Writer, errOut io.Writer) {
 	_, err := exec.LookPath(cmd)
 	if err != nil {
-		return "", fmt.Sprintf("%s: command not found\n", cmd)
+		fmt.Fprintf(errOut, "%s: command not found\n", cmd)
+		return
 	}
-	return executeExternalApp(cmd, args)
+	executeExternalApp(cmd, args, in, out, errOut)
 }
 
-func executeExternalApp(app string, args []string) (string, string) {
+func executeExternalApp(app string, args []string, in io.Reader, out io.Writer, errOut io.Writer) {
 	cmd := exec.Command(app, args...)
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
+	cmd.Stdin = in
+	cmd.Stdout = out
+	cmd.Stderr = errOut
 	cmd.Run()
-
-	return stdout.String(), stderr.String()
 }

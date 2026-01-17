@@ -80,59 +80,10 @@ func main() {
 		}
 
 		tokens := commands.Parse(cmd)
-		if tokens == nil {
+		if len(tokens) == 0 {
 			continue
 		}
 
-		cmdName := tokens[0]
-		allArgs := tokens[1:]
-		args := allArgs
-		outFile := os.Stdout
-		errFile := os.Stderr
-		if i, outRedir := commands.HasOutRedir(allArgs); i != -1 {
-			args = allArgs[:i]
-			fileName := allArgs[i+1]
-			flagOut := os.O_CREATE | os.O_WRONLY
-			if outRedir == 1 {
-				flagOut |= os.O_APPEND
-			} else {
-				flagOut |= os.O_TRUNC
-			}
-			file, err := os.OpenFile(fileName, flagOut, 0644)
-			if err != nil {
-				fmt.Printf("Output redirection error: %v\n", err)
-				continue
-			}
-			defer file.Close()
-			outFile = file
-		}
-		if i, errRedir := commands.HasErrRedir(allArgs); i != -1 {
-			args = allArgs[:min(i, len(args))]
-			fileName := allArgs[i+1]
-			flagErr := os.O_CREATE | os.O_WRONLY
-			if errRedir == 1 {
-				flagErr |= os.O_APPEND
-			} else {
-				flagErr |= os.O_TRUNC
-			}
-			file, err := os.OpenFile(fileName, flagErr, 0644)
-			if err != nil {
-				fmt.Printf("Error redirection error: %v\n", err)
-				continue
-			}
-			defer file.Close()
-			errFile = file
-		}
-
-		res, errOut := commands.ExecuteCommand(cmdName, args)
-
-		if res != "" {
-			res = strings.ReplaceAll(res, "\n", "\r\n")
-			outFile.WriteString(res)
-		}
-		if errOut != "" {
-			errOut = strings.ReplaceAll(errOut, "\n", "\r\n")
-			errFile.WriteString(errOut)
-		}
+		commands.HandlePipeline(commands.ParsePipeline(cmd))
 	}
 }

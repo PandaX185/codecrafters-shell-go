@@ -1,27 +1,31 @@
 package commands
 
-import "strings"
+import (
+	"io"
+	"os"
+	"strings"
+)
 
-func ExecuteCommand(cmd string, args []string) (res string, err string) {
+func ExecuteCommand(cmd string, args []string, in io.Reader, out io.Writer, errOut io.Writer) {
 	switch cmd {
 	case Echo.String():
-		res, err = handleEcho(args)
+		handleEcho(args, out)
 		break
 	case Type.String():
 		cmd := strings.Join(args, " ")
-		res, err = handleType(cmd)
+		handleType(cmd, out, errOut)
 		break
 	case Exit.String():
-		return
+		os.Exit(0)
 	case Pwd.String():
-		res, err = handlePwd()
+		handlePwd(out, errOut)
 		break
 	case Cd.String():
 		dir := strings.Join(args, " ")
-		res, err = handleCd(dir)
+		handleCd(dir, out, errOut)
 		break
 	default:
-		res, err = handleExternalApp(cmd, args)
+		handleExternalApp(cmd, args, in, out, errOut)
 	}
 
 	return

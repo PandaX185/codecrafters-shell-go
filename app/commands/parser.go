@@ -192,6 +192,19 @@ func tokenizeCommand(line string) (argc []string) {
 				token = append(token, r)
 			}
 
+		case '|':
+			if esc {
+				token = append(token, r)
+				esc = false
+				break
+			}
+
+			if len(token) != 0 {
+				argc = append(argc, string(token))
+				token = token[:0]
+			}
+			argc = append(argc, "|")
+
 		default:
 			if esc {
 				esc = false
