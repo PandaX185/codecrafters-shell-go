@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"strings"
 )
 
 func handleExternalApp(cmd string, args []string) (string, string) {
@@ -22,5 +23,5 @@ func executeExternalApp(app string, args []string) (string, string) {
 	cmd.Stderr = &stderr
 	cmd.Run()
 
-	return stdout.String(), stderr.String()
+	return strings.TrimSuffix(stdout.String(), "\n"), strings.TrimSuffix(stderr.String(), "\n")
 }

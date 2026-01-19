@@ -45,6 +45,7 @@ func Repl() {
 		}
 
 		executor.Execute(cmd)
+		fmt.Print("\r\n")
 	}
 }
 

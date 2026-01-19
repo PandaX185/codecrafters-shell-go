@@ -1,6 +1,9 @@
 package commands
 
-import "strings"
+import (
+	"os"
+	"strings"
+)
 
 func ExecuteCommand(cmd string, args []string) (res string, err string) {
 	switch cmd {
@@ -10,6 +13,7 @@ func ExecuteCommand(cmd string, args []string) (res string, err string) {
 		cmd := strings.Join(args, " ")
 		return handleType(cmd)
 	case Exit.String():
+		os.Exit(0)
 		return
 	case Pwd.String():
 		return handlePwd()
