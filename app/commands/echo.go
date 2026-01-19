@@ -5,5 +5,5 @@ import (
 )
 
 func handleEcho(args []string) (string, string) {
-	return strings.Join(args, " ") + "\n", ""
+	return strings.Join(args, " "), ""
 }
