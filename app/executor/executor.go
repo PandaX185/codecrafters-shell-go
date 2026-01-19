@@ -45,11 +45,11 @@ func Execute(cmd string) {
 		res += "\n"
 		errOut += "\n"
 
-		if res != "" {
+		if res != "\n" {
 			res = strings.ReplaceAll(res, "\n", "\r\n")
 			outFile.WriteString(res)
 		}
-		if errOut != "" {
+		if errOut != "\n" {
 			errOut = strings.ReplaceAll(errOut, "\n", "\r\n")
 			errFile.WriteString(errOut)
 		}
