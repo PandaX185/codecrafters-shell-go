@@ -186,13 +186,16 @@ func executePipeline(pipeline [][]string) {
 			}
 		}
 	}
+	for i := 0; i < len(cmds); i++ {
+		if cmds[i].isBuiltin && cmds[i].builtin != nil {
+			cmds[i].builtin.Run()
+		}
+	}
 	for _, w := range pipeWriters {
 		w.Close()
 	}
 	for i := 0; i < len(cmds); i++ {
-		if cmds[i].isBuiltin && cmds[i].builtin != nil {
-			cmds[i].builtin.Run()
-		} else if cmds[i].external != nil {
+		if !cmds[i].isBuiltin && cmds[i].external != nil {
 			cmds[i].external.Wait()
 		}
 	}
