@@ -53,7 +53,8 @@ func indexNonEscaped(runes []rune, quote rune) int {
 	return -1
 }
 
-func tokenizeCommand(line string) (argc []string) {
+func Parse(line string) (argc []string) {
+	line = strings.TrimSuffix(line, "\n")
 	line = strings.TrimLeftFunc(line, unicode.IsSpace)
 	if len(line) == 0 {
 		return nil
@@ -207,9 +208,4 @@ func tokenizeCommand(line string) (argc []string) {
 		argc = append(argc, string(token))
 	}
 	return
-}
-
-func Parse(line string) []string {
-	line = strings.TrimSuffix(line, "\n")
-	return tokenizeCommand(line)
 }
