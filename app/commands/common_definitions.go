@@ -23,6 +23,10 @@ var builtinCommands = map[string]bool{
 	Cd.String():   true,
 }
 
+func IsBuiltin(cmd string) bool {
+	return builtinCommands[cmd]
+}
+
 func (c command) String() string {
 	switch c {
 	case Echo:
