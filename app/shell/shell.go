@@ -44,8 +44,9 @@ func Repl() {
 			continue
 		}
 
+		RestoreTerminal()
 		executor.Execute(cmd)
-		fmt.Print("\r\n")
+		SetupTerminal()
 	}
 }
 

@@ -53,7 +53,7 @@ func indexNonEscaped(runes []rune, quote rune) int {
 	return -1
 }
 
-func Parse(line string) (argc []string) {
+func Parse(line string) (commands [][]string) {
 	line = strings.TrimSuffix(line, "\n")
 	line = strings.TrimLeftFunc(line, unicode.IsSpace)
 	if len(line) == 0 {
@@ -63,6 +63,8 @@ func Parse(line string) (argc []string) {
 	token := make([]rune, 0, 256)
 	lineRunes := []rune(line)
 	esc := false
+	commands = make([][]string, 0)
+	current := make([]string, 0)
 
 	i := 0
 	for i < len(lineRunes) {
@@ -80,7 +82,7 @@ func Parse(line string) (argc []string) {
 				break
 			}
 
-			argc = append(argc, string(token))
+			current = append(current, string(token))
 			token = token[:0]
 
 		case '\'', '"':
@@ -138,31 +140,65 @@ func Parse(line string) (argc []string) {
 			}
 
 			if len(token) != 0 {
-				argc = append(argc, string(token))
+				current = append(current, string(token))
 				token = token[:0]
 			}
 
 			if i+1 < len(lineRunes) && lineRunes[i+1] == '>' {
-				argc = append(argc, ">>")
+				current = append(current, ">>")
 				i++
 			} else {
-				argc = append(argc, ">")
+				current = append(current, ">")
 			}
+
+		case '<':
+			if esc {
+				token = append(token, r)
+				esc = false
+				break
+			}
+
+			if len(token) != 0 {
+				current = append(current, string(token))
+				token = token[:0]
+			}
+
+			if i+1 < len(lineRunes) && lineRunes[i+1] == '<' {
+				current = append(current, "<<")
+				i++
+			} else {
+				current = append(current, "<")
+			}
+
+		case '|':
+			if esc {
+				token = append(token, r)
+				esc = false
+				break
+			}
+
+			if len(token) != 0 {
+				current = append(current, string(token))
+				token = token[:0]
+			}
+
+			commands = append(commands, current)
+			current = make([]string, 0)
 
 		case '1':
 			if i < len(lineRunes)-2 && lineRunes[i+1] == '>' && lineRunes[i+2] == '>' && !esc {
 				if len(token) != 0 {
-					argc = append(argc, string(token))
+					current = append(current, string(token))
 					token = token[:0]
 				}
-				argc = append(argc, "1>>")
+				current = append(current, "1>>")
 				i += 2
 			} else if i < len(lineRunes)-1 && lineRunes[i+1] == '>' && !esc {
 				if len(token) != 0 {
-					argc = append(argc, string(token))
+					current = append(current, string(token))
 					token = token[:0]
 				}
-				argc = append(argc, "1>")
+				current = append(current, "1>")
 				i++
 			} else {
 				if esc {
@@ -174,17 +210,17 @@ func Parse(line string) (argc []string) {
 		case '2':
 			if i < len(lineRunes)-2 && lineRunes[i+1] == '>' && lineRunes[i+2] == '>' && !esc {
 				if len(token) != 0 {
-					argc = append(argc, string(token))
+					current = append(current, string(token))
 					token = token[:0]
 				}
-				argc = append(argc, "2>>")
+				current = append(current, "2>>")
 				i += 2
 			} else if i < len(lineRunes)-1 && lineRunes[i+1] == '>' && !esc {
 				if len(token) != 0 {
-					argc = append(argc, string(token))
+					current = append(current, string(token))
 					token = token[:0]
 				}
-				argc = append(argc, "2>")
+				current = append(current, "2>")
 				i++
 			} else {
 				if esc {
@@ -205,7 +241,10 @@ func Parse(line string) (argc []string) {
 	}
 
 	if len(token) != 0 {
-		argc = append(argc, string(token))
+		current = append(current, string(token))
+	}
+	if len(current) > 0 {
+		commands = append(commands, current)
 	}
 	return
 }

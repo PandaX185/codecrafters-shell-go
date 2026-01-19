@@ -23,3 +23,15 @@ func HasErrRedir(args []string) (int, int) {
 	}
 	return -1, -1
 }
+
+func HasInRedir(args []string) (int, int) {
+	for i, arg := range args {
+		if arg == "<" {
+			return i, 0
+		}
+		if arg == "<<" {
+			return i, 1
+		}
+	}
+	return -1, -1
+}
