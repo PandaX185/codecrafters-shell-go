@@ -42,6 +42,8 @@ func Execute(cmd string) {
 		}()
 
 		res, errOut := commands.ExecuteCommand(cmdName, args)
+		res += "\n"
+		errOut += "\n"
 
 		if res != "" {
 			res = strings.ReplaceAll(res, "\n", "\r\n")
