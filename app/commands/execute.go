@@ -5,24 +5,18 @@ import "strings"
 func ExecuteCommand(cmd string, args []string) (res string, err string) {
 	switch cmd {
 	case Echo.String():
-		res, err = handleEcho(args)
-		break
+		return handleEcho(args)
 	case Type.String():
 		cmd := strings.Join(args, " ")
-		res, err = handleType(cmd)
-		break
+		return handleType(cmd)
 	case Exit.String():
 		return
 	case Pwd.String():
-		res, err = handlePwd()
-		break
+		return handlePwd()
 	case Cd.String():
 		dir := strings.Join(args, " ")
-		res, err = handleCd(dir)
-		break
+		return handleCd(dir)
 	default:
-		res, err = handleExternalApp(cmd, args)
+		return handleExternalApp(cmd, args)
 	}
-
-	return
 }

@@ -6,8 +6,8 @@ import (
 
 func handlePwd() (string, string) {
 	if dir, err := os.Getwd(); err == nil {
-		return dir + "\n", ""
+		return dir, ""
 	} else {
-		return "", "pwd: error retrieving current directory\n"
+		return "", "pwd: error retrieving current directory"
 	}
 }

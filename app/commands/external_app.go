@@ -9,7 +9,7 @@ import (
 func handleExternalApp(cmd string, args []string) (string, string) {
 	_, err := exec.LookPath(cmd)
 	if err != nil {
-		return "", fmt.Sprintf("%s: command not found\n", cmd)
+		return "", fmt.Sprintf("%s: command not found", cmd)
 	}
 	return executeExternalApp(cmd, args)
 }
